@@ -1,49 +1,24 @@
-from statistics import mean
 
-heart_rate_samples = {
-"J. Alvarez": [72, 75, 78],
-"M. Chen": [80, 82],
-"R. Okafor": [65, 68, 70, 66],
-"S. Patel": [90, 95, 92, 88, 91],
-"T. Nguyen": [77, 79],
-"L. Kowalski": [68, 70, 69],
-"D. Osei": [98, 101, 95, 99],
-"A. Whitfield": [74, 76, 75, 73],
+import requests
 
+# TA census API Url always has this shape:
+# https://api.census.gov/data/{year}/{dataset}?get={variables}&for={geography}
+
+YEAR = 2020
+DATASET = "dec"
+URL = f"https://api.census.gov/data/{YEAR}/{DATASET}"
+API_KEY = "85fcc6b7c0ad4cf2938d868da6560a69eca034b0"
+
+CENSUS_API_KEY = ""
+params = {
+    "get": "NAME,DP1_0001C",
+    "for": "state:*",
+    "key": API_KEY
 }
 
-def patient_name(patient_number):
-    patients = list(heart_rate_samples.keys())
-    return patients[patient_number]
+response = requests.get(URL, params=params)
 
-# I am assigning a patient number to each patient name
-# starting at 0
+data = response.json()
+# the API returns a list of lists. the first row is the column header
+print(data)
 
-def patient_stats(patient_number, *args):
-    name = patient_name(patient_number)
-    heart_rates = heart_rate_samples[name]
-
-    results = {}
-
-    patients = list(heart_rate_samples.keys())
-
-    print("Patient List:")
-
-    for number in range(len(patients)):
-        print(number, "-", patients[number])
-
-    patient_number = int(input("\nEnter a patient number: "))
-
-    name = patient_name(patient_number)
-
-    print("\nPatient:", name)
-    print("Heart Rate Values:", heart_rate_samples[name])
-
-    choice = input("\nWould you like to calculate the mean? Enter yes or no: ").lower()
-
-    if choice == "yes":
-        result = patient_stats(patient_number, "mean")
-        print("Mean Heart Rate:", result["mean"])
-
-    else:
-        print("Program ended.")
