@@ -1,24 +1,23 @@
-
 import requests
 
-# TA census API Url always has this shape:
-# https://api.census.gov/data/{year}/{dataset}?get={variables}&for={geography}
+# Ask the user for the state FIPS code(s)
+state_fips = input("Enter the State FIPS code(s) that you would like data for: ")
 
-YEAR = 2020
-DATASET = "dec"
-URL = f"https://api.census.gov/data/{YEAR}/{DATASET}"
-API_KEY = "85fcc6b7c0ad4cf2938d868da6560a69eca034b0"
+# Ask the user for the variable names
+variables = input("Enter the variable names that you would like data for: ")
 
-CENSUS_API_KEY = ""
-params = {
-    "get": "NAME,DP1_0001C",
-    "for": "state:*",
-    "key": API_KEY
-}
+# Build the Census API URL
+url = f"https://api.census.gov/data/2023/acs/acs1?get=NAME,{variables}&for=state:{state_fips}"
 
-response = requests.get(URL, params=params)
+# Request the data
+response = requests.get(url)
 
+# Convert the response to JSON
 data = response.json()
-# the API returns a list of lists. the first row is the column header
-print(data)
 
+# Print the number of rows
+print(f"\nFound {len(data) - 1} Rows of Data.")
+
+# Print each row of data
+for row in data:
+    print(row)
