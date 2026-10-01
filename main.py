@@ -1,23 +1,23 @@
-import requests
+# IC # 4 # Pandas and Numpy Data Cleaning #
+# Sofia Spada# HSC4933.005 # 9/29/26 #
 
-# Ask the user for the state FIPS code(s)
-state_fips = input("Enter the State FIPS code(s) that you would like data for: ")
-
-# Ask the user for the variable names
-variables = input("Enter the variable names that you would like data for: ")
-
-# Build the Census API URL
-url = f"https://api.census.gov/data/2023/acs/acs1?get=NAME,{variables}&for=state:{state_fips}"
-
-# Request the data
-response = requests.get(url)
-
-# Convert the response to JSON
-data = response.json()
-
-# Print the number of rows
-print(f"\nFound {len(data) - 1} Rows of Data.")
-
-# Print each row of data
-for row in data:
-    print(row)
+import numpy as np
+# Load csv
+df = pd.read_csv("eye_health.csv")
+# Print csv stats before cleaning
+print (df. shape, df. dtypes,
+df. isna().sum), # Print total number of NaN values df.nunique(,
+sep="\n")
+# Print number of duplicated values
+print ("Duplicates:", df. duplicated(). sum))
+df = df.dropna(axis=1, ho="all") # Drop columns with no data (only NaN)
+af = df.drop(coluens = [c for c in df.columns if c.endswith ("ID")]) # Drop columns that end in "ID"
+df = df, dropna (subset=["Data_Value")) # Drop rows with no value in the column "Data_Value"
+df. columns = df.columns.str. Lower).str. replace(" ", "-") # Make column headers snake_case
+df ["error"] = (df ["high_confidence_limit"] - df["Low_confidence_limit"]) / 2 # Create new column "ci width" and
+df ["prevalence _level"] = np.select (condlist: [df ["data_value"] < 5, df["data_value"] <= 7],1
+choicelist: ["Low", "Medium"), default: "High")
+df.to_csv( path_or_buf: "eye_health_2022_clean.csv",
+index=False) # Save to csv the different name
+print (pd. read_csv(
+"eye_health_2022_clean.csv").shape == df.shape)
