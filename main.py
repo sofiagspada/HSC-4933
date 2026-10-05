@@ -1,23 +1,78 @@
-# IC # 4 # Pandas and Numpy Data Cleaning #
-# Sofia Spada# HSC4933.005 # 9/29/26 #
+import pandas as pd
 
-import numpy as np
-# Load csv
-df = pd.read_csv("eye_health.csv")
-# Print csv stats before cleaning
-print (df. shape, df. dtypes,
-df. isna().sum), # Print total number of NaN values df.nunique(,
-sep="\n")
-# Print number of duplicated values
-print ("Duplicates:", df. duplicated(). sum))
-df = df.dropna(axis=1, ho="all") # Drop columns with no data (only NaN)
-af = df.drop(coluens = [c for c in df.columns if c.endswith ("ID")]) # Drop columns that end in "ID"
-df = df, dropna (subset=["Data_Value")) # Drop rows with no value in the column "Data_Value"
-df. columns = df.columns.str. Lower).str. replace(" ", "-") # Make column headers snake_case
-df ["error"] = (df ["high_confidence_limit"] - df["Low_confidence_limit"]) / 2 # Create new column "ci width" and
-df ["prevalence _level"] = np.select (condlist: [df ["data_value"] < 5, df["data_value"] <= 7],1
-choicelist: ["Low", "Medium"), default: "High")
-df.to_csv( path_or_buf: "eye_health_2022_clean.csv",
-index=False) # Save to csv the different name
-print (pd. read_csv(
-"eye_health_2022_clean.csv").shape == df.shape)
+# Read dataset to inspect columns and structure
+df = pd.read_csv("Maternal Health Risk Data Set (2).csv")
+print("Columns:", df.columns.tolist())
+print("\nShape:", df.shape)
+print("\nHead:\n", df.head())
+
+Code output
+Columns: ['Age', 'SystolicBP', 'DiastolicBP', 'BS', 'BodyTemp', 'HeartRate', 'RiskLevel']
+
+Shape: (1014, 7)
+
+Head:
+    Age  SystolicBP  DiastolicBP    BS  BodyTemp  HeartRate  RiskLevel
+0   25         130           80  15.0      98.0         86  high risk
+1   35         140           90  13.0      98.0         70  high risk
+2   29          90           70   8.0     100.0         80  high risk
+3   30         140           85   7.0      98.0         70  high risk
+4   35         120           60   6.1      98.0         76   low risk
+
+Python
+# Script to convert CSV to Parquet
+parquet_script = """import pandas as pd
+
+# Load dataset
+df = pd.read_csv('Maternal Health Risk Data Set (2).csv')
+
+# Ensure duplicate columns are removed (keeps the first occurrence)
+df = df.loc[:, ~df.columns.duplicated()]
+
+# Save to Parquet format
+df.to_parquet('maternal_health_risk.parquet', index=False)
+print("Successfully converted dataset to maternal_health_risk.parquet")
+"""
+
+# Script to convert CSV to JSON
+json_script = """import pandas as pd
+
+# Load dataset
+df = pd.read_csv('Maternal Health Risk Data Set (2).csv')
+
+# Ensure duplicate columns are removed
+df = df.loc[:, ~df.columns.duplicated()]
+
+# Save to JSON format
+df.to_json('maternal_health_risk.json', orient='records', indent=4)
+print("Successfully converted dataset to maternal_health_risk.json")
+"""
+
+# Script to convert CSV to XLSX
+excel_script = """import pandas as pd
+
+# Load dataset
+df = pd.read_csv('Maternal Health Risk Data Set (2).csv')
+
+# Ensure duplicate columns are removed
+df = df.loc[:, ~df.columns.duplicated()]
+
+# Save to Excel format
+df.to_excel('maternal_health_risk.xlsx', index=False)
+print("Successfully converted dataset to maternal_health_risk.xlsx")
+"""
+
+with open('convert_to_parquet.py', 'w') as f:
+    f.write(parquet_script)
+
+with open('convert_to_json.py', 'w') as f:
+    f.write(json_script)
+
+with open('convert_to_excel.py', 'w') as f:
+    f.write(excel_script)
+
+# Execute conversion scripts
+import subprocess
+subprocess.run(['python', 'convert_to_parquet.py'])
+subprocess.run(['python', 'convert_to_json.py'])
+subprocess.run(['python', 'convert_to_excel.py'])
