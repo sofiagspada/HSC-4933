@@ -126,7 +126,8 @@ def main():
 
 
 if __name__ == '__main__':
-  main()vimport os
+  main()
+  import os
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy import stats
